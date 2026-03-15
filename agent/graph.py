@@ -2,6 +2,11 @@ from langgraph.graph import StateGraph, END
 from agent.state import AgentState
 from agent.model import get_llm
 from mcp_client.client import MCPClient
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from agent.state import AgentState  # Now this works
 
 llm = get_llm()
 client = MCPClient()
@@ -15,7 +20,7 @@ User Query: {state['user_input']}
 Decide which tool to use:
 
 github
-perplexity
+search
 calendar
 none
 """
