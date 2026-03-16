@@ -11,8 +11,6 @@ mcp = FastMCP("github-tools")
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-# ============== REST API Endpoints ==============
-
 @app.get("/")
 async def root():
     """Welcome endpoint"""
@@ -35,8 +33,6 @@ async def health_check():
         "github_token_configured": bool(GITHUB_TOKEN),
         "github_token_valid": "Check your .env file if False"
     }
-
-# ============== MCP Tools ==============
 
 @mcp.tool()
 def search_repositories(query: str):
@@ -81,10 +77,8 @@ def search_repositories(query: str):
     except Exception as e:
         return {"error": str(e)}
 
-# ============== Mount MCP SSE App ==============
 app.mount("/mcp", mcp.sse_app())
 
-# ============== For direct running ==============
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
