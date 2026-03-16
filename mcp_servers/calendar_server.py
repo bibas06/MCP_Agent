@@ -12,8 +12,6 @@ mcp = FastMCP("calendar-tools")
 API_KEY = os.getenv("GOOGLE_API_KEY")
 CALENDAR_ID = os.getenv("GOOGLE_CALENDAR_ID")
 
-# ============== REST API Endpoints ==============
-
 @app.get("/")
 async def root():
     """Welcome endpoint"""
@@ -36,11 +34,9 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    # Try to test the connection
     connection_status = "unknown"
     try:
         if API_KEY and CALENDAR_ID:
-            # Quick test to see if we can connect
             service = build("calendar", "v3", developerKey=API_KEY)
             service.events().list(
                 calendarId=CALENDAR_ID,
@@ -57,10 +53,8 @@ async def health_check():
         "google_api_key_configured": bool(API_KEY),
         "calendar_id_configured": bool(CALENDAR_ID),
         "connection_status": connection_status,
-        "timestamp": str(os.times().elapsed)  # Simple timestamp alternative
+        "timestamp": str(os.times().elapsed)
     }
-
-# ============== Initialize Service ==============
 
 if not API_KEY or not CALENDAR_ID:
     print("⚠️  Warning: GOOGLE_API_KEY or GOOGLE_CALENDAR_ID not set in .env file")
@@ -69,8 +63,6 @@ if not API_KEY or not CALENDAR_ID:
     print("GOOGLE_CALENDAR_ID=your_calendar_id_here")
 
 service = build("calendar", "v3", developerKey=API_KEY)
-
-# ============== MCP Tools ==============
 
 @mcp.tool()
 def get_events():
@@ -95,7 +87,6 @@ def get_events():
         result = []
 
         for event in events:
-            # Get start time (handle both date and dateTime formats)
             start = event["start"].get("dateTime", event["start"].get("date"))
             
             result.append({
@@ -117,10 +108,8 @@ def get_events():
             "message": "Failed to fetch calendar events. Check your API key and calendar ID."
         }
 
-# ============== Mount MCP SSE App ==============
 app.mount("/mcp", mcp.sse_app())
 
-# ============== For direct running ==============
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
