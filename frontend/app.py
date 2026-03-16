@@ -8,14 +8,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# API endpoint
 API_URL = "http://localhost:8000/chat"
 
-# Initialize session state
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# Sidebar
 with st.sidebar:
     st.title("🤖 MCP AI Agent")
     st.markdown("---")
@@ -28,7 +25,6 @@ with st.sidebar:
         st.session_state.history = []
         st.rerun()
     
-    # API status check
     try:
         response = requests.get("http://localhost:8000/health", timeout=2)
         if response.status_code == 200:
@@ -39,25 +35,20 @@ with st.sidebar:
         st.error("❌ API not reachable")
         st.info("Start the API gateway with: python api_gateway.py")
 
-# Main title
 st.title("🎯 Multi MCP LangGraph Assistant")
 
-# Display chat history
 for role, msg in st.session_state.history:
     with st.chat_message(role):
         st.write(msg)
 
-# Chat input
 user_input = st.chat_input("Ask something...")
 
 if user_input:
-    # Add user message
     st.session_state.history.append(("user", user_input))
     
     with st.chat_message("user"):
         st.write(user_input)
     
-    # Get response from API
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             try:
@@ -80,9 +71,7 @@ if user_input:
             
             st.write(answer)
     
-    # Add assistant message
     st.session_state.history.append(("assistant", answer))
 
-# Instructions
 if not st.session_state.history:
     st.info("👆 Start by typing a question above!")
