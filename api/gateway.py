@@ -2,15 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# Now import from agent
 from agent.graph import agent_graph
 
 app = FastAPI(title="LangGraph MCP Gateway")
 
-# Add CORS middleware for Streamlit frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8501"],  # Streamlit default port
+    allow_origins=["http://localhost:8501"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -65,7 +63,6 @@ async def chat(q: Query):
             "message": "Failed to process query"
         }
 
-# For running directly
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
