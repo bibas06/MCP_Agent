@@ -11,8 +11,6 @@ mcp = FastMCP("search-tools")
 
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
-# ============== REST API Endpoints ==============
-
 @app.get("/")
 async def root():
     """Welcome endpoint"""
@@ -34,12 +32,10 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    # Test the Tavily connection
     connection_status = "unknown"
     try:
         if TAVILY_API_KEY:
             client = TavilyClient(api_key=TAVILY_API_KEY)
-            # Simple test search
             test_result = client.search(query="test", max_results=1)
             connection_status = "connected"
         else:
@@ -54,16 +50,12 @@ async def health_check():
         "timestamp": str(os.times().elapsed)
     }
 
-# ============== Initialize Client ==============
-
 if not TAVILY_API_KEY:
     print("⚠️  Warning: TAVILY_API_KEY not set in .env file")
     print("Please create a .env file with:")
     print("TAVILY_API_KEY=your_api_key_here")
 
 client = TavilyClient(api_key=TAVILY_API_KEY)
-
-# ============== MCP Tools ==============
 
 @mcp.tool()
 def web_search(query: str):
@@ -88,10 +80,9 @@ def web_search(query: str):
         result = client.search(
             query=query,
             max_results=5,
-            search_depth="basic"  # Use "advanced" for more comprehensive results
+            search_depth="basic"
         )
         
-        # Format the results nicely
         formatted_results = []
         for item in result.get("results", []):
             formatted_results.append({
@@ -115,10 +106,8 @@ def web_search(query: str):
             "query": query
         }
 
-# ============== Mount MCP SSE App ==============
 app.mount("/mcp", mcp.sse_app())
 
-# ============== For direct running ==============
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8002)
