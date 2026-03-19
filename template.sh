@@ -1,5 +1,3 @@
-#!/bin/bash
-
 echo "🚀 Creating Multi MCP LangGraph Agent Project..."
 
 PROJECT_NAME="MCP_Agent"
@@ -38,10 +36,3 @@ echo "Structure:"
 echo ""
 
 tree .
-
-echo ""
-echo "Next steps:"
-echo "1. Fill requirements.txt"
-echo "2. Add API keys in .env"
-echo "3. Start MCP servers"
-echo "4. Run Streamlit UI"
